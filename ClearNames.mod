@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ModuleFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <UiMod name="ClearNames" version="0.2.0" date="09/09/2026">
+  <UiMod name="ClearNames" version="0.2.1" date="09/09/2026">
     <Author name="ClearNames contributors" />
     <Description text="Readability-first overhead-name and UI font optimizer for Return of Reckoning." />
     <VersionSettings gameVersion="1.4.8" windowsVersion="1.0" savedVariablesVersion="1.0" />
