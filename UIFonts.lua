@@ -6,11 +6,7 @@ ClearNames.UIFonts.active = false
 ClearNames.UIFonts.mappedCalls = ClearNames.UIFonts.mappedCalls or 0
 ClearNames.UIFonts.registeredRefreshEvents = ClearNames.UIFonts.registeredRefreshEvents or {}
 
-local validModes = {
-    off = true,
-    readable = true,
-    large = true,
-}
+local validModes = { off = true, readable = true, large = true }
 
 local readableMap = {
     font_clear_tiny = "font_clear_small_bold",
@@ -46,15 +42,27 @@ local largeMap = {
     font_heading_rank = "font_clear_medium_bold",
 }
 
-local refreshEventKeys = {
-    "LOADING_END",
-    "GROUP_UPDATED",
-    "GROUP_PLAYER_ADDED",
+local refreshEventKeys = { "LOADING_END" }
+
+local safeExactWindows = {
+    ClearNamesNameValue = true,
+    ClearNamesTitleValue = true,
+    ClearNamesProfileValue = true,
+    ClearNamesRecommendation = true,
+    TargetWindowName = true,
+    FriendlyTargetWindowName = true,
+    MouseOverTargetUnitWindowName = true,
 }
 
+function ClearNames.UIFonts.ShouldRemapWindow(windowName)
+    if type(windowName) ~= "string" then return false end
+    if safeExactWindows[windowName] then return true end
+    if string.match(windowName, "^ChatWindow") then return true end
+    if string.match(windowName, "^EA_Chat") then return true end
+    return false
+end
+
 local knownLabels = {
-    { name = "PlayerWindowPlayerName", font = "font_heading_unitframe_large_name" },
-    { name = "PlayerWindowLevelText", font = "font_heading_rank" },
     { name = "TargetWindowName", font = "font_heading_unitframe_large_name" },
     { name = "FriendlyTargetWindowName", font = "font_heading_unitframe_large_name" },
     { name = "MouseOverTargetUnitWindowName", font = "font_heading_target_mouseover_name" },
@@ -95,7 +103,7 @@ function ClearNames.UIFonts.WrappedLabelSetFont(windowName, fontName, lineSpacin
     if type(delegate) ~= "function" then return false end
 
     local resolved = fontName
-    if ClearNames.UIFonts.active then
+    if ClearNames.UIFonts.active and ClearNames.UIFonts.ShouldRemapWindow(windowName) then
         resolved = ClearNames.UIFonts.Resolve(fontName, activeMode())
         if resolved ~= fontName then
             ClearNames.UIFonts.mappedCalls = ClearNames.UIFonts.mappedCalls + 1
@@ -183,7 +191,8 @@ local function refreshLabel(windowName, originalFont)
     if LabelSetFont == ClearNames.UIFonts.WrappedLabelSetFont then
         LabelSetFont(windowName, originalFont, spacing)
     else
-        local resolved = ClearNames.UIFonts.active and ClearNames.UIFonts.Resolve(originalFont, activeMode()) or originalFont
+        local resolved = ClearNames.UIFonts.active and ClearNames.UIFonts.ShouldRemapWindow(windowName)
+            and ClearNames.UIFonts.Resolve(originalFont, activeMode()) or originalFont
         if resolved ~= originalFont then
             ClearNames.UIFonts.mappedCalls = ClearNames.UIFonts.mappedCalls + 1
         end
@@ -197,13 +206,6 @@ function ClearNames.UIFonts.RefreshKnown()
     local _, entry
     for _, entry in ipairs(knownLabels) do
         if refreshLabel(entry.name, entry.font) then refreshed = refreshed + 1 end
-    end
-
-    local i
-    for i = 1, 5 do
-        if refreshLabel("GroupWindowPlayer" .. i .. "Name", "font_heading_unitframe_large_name") then
-            refreshed = refreshed + 1
-        end
     end
     return refreshed
 end
