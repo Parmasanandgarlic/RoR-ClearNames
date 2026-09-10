@@ -38,6 +38,11 @@ def test_hd_labels_defer_target_sync_one_frame_on_root():
     assert 'WindowUnregisterCoreEventHandler("Root", "OnUpdate")' in source
 
 
+def test_one_shot_scheduler_requires_register_and_unregister():
+    source = read("HDLabels.lua")
+    assert 'type(WindowRegisterCoreEventHandler) ~= "function" or type(WindowUnregisterCoreEventHandler) ~= "function"' in source
+
+
 def test_hd_labels_keep_constant_screen_scale():
     source = read("HDLabels.lua")
     assert "WindowSetScale(windowName, 1.0)" in source
