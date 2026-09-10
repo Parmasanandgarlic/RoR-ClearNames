@@ -1,4 +1,6 @@
 local calls = {}
+local registered = {}
+local unregistered = {}
 
 local function originalLabelSetFont(windowName, fontName, lineSpacing)
     table.insert(calls, { window = windowName, font = fontName, spacing = lineSpacing })
@@ -10,6 +12,19 @@ DoesWindowExist = function(windowName)
     return windowName == "TargetWindowName" or windowName == "GroupWindowPlayer1Name"
 end
 WindowUtils = { FONT_DEFAULT_TEXT_LINESPACING = 7 }
+SystemData = {
+    Events = {
+        LOADING_END = 101,
+        GROUP_UPDATED = 102,
+        GROUP_PLAYER_ADDED = 103,
+    }
+}
+RegisterEventHandler = function(eventId, callback)
+    table.insert(registered, { eventId = eventId, callback = callback })
+end
+UnregisterEventHandler = function(eventId, callback)
+    table.insert(unregistered, { eventId = eventId, callback = callback })
+end
 ClearNames = { Settings = { uiFontMode = "readable" } }
 
 dofile("UIFonts.lua")
@@ -19,10 +34,13 @@ assert(ClearNames.UIFonts.Resolve("font_heading_unitframe_large_name", "large") 
 assert(ClearNames.UIFonts.Resolve("third_party_custom_font", "readable") == "third_party_custom_font")
 
 assert(ClearNames.UIFonts.SetMode("readable") == true)
+assert(#registered == 3)
 local wrapper = LabelSetFont
 assert(wrapper == ClearNames.UIFonts.WrappedLabelSetFont)
 assert(ClearNames.UIFonts.InstallHook() == true)
 assert(LabelSetFont == wrapper)
+assert(ClearNames.UIFonts.RegisterRefreshEvents() == true)
+assert(#registered == 3)
 
 ClearNames.UIFonts.mappedCalls = 0
 LabelSetFont("DynamicLabel", "font_default_text", 4)
@@ -32,10 +50,12 @@ assert(ClearNames.UIFonts.mappedCalls == 1)
 
 assert(ClearNames.UIFonts.SetMode("off") == true)
 assert(LabelSetFont == originalLabelSetFont)
+assert(#unregistered == 3)
 LabelSetFont("PassThrough", "font_default_text", 5)
 assert(calls[#calls].font == "font_default_text")
 
 assert(ClearNames.UIFonts.SetMode("readable") == true)
+assert(#registered == 6)
 local foundTarget = false
 local foundGroup = false
 for _, call in ipairs(calls) do
@@ -44,6 +64,10 @@ for _, call in ipairs(calls) do
 end
 assert(foundTarget == true)
 assert(foundGroup == true)
+
+local callsBeforeRefreshEvent = #calls
+ClearNames.UIFonts.OnUiRefreshEvent()
+assert(#calls > callsBeforeRefreshEvent)
 
 local doesWindowExist = DoesWindowExist
 DoesWindowExist = nil
@@ -57,16 +81,19 @@ assert(ClearNames.UIFonts.SetMode("banana") == false)
 assert(ClearNames.Settings.uiFontMode == modeBeforeInvalid)
 
 ClearNames.UIFonts.RemoveHook()
+assert(#unregistered == 6)
 assert(LabelSetFont == originalLabelSetFont)
 assert(ClearNames.UIFonts.delegate == nil)
 
 assert(ClearNames.UIFonts.SetMode("readable") == true)
+assert(#registered == 9)
 local clearNamesWrapper = LabelSetFont
 local function thirdPartyHook(windowName, fontName, lineSpacing)
     return clearNamesWrapper(windowName, fontName, lineSpacing)
 end
 LabelSetFont = thirdPartyHook
 ClearNames.UIFonts.RemoveHook()
+assert(#unregistered == 9)
 assert(LabelSetFont == thirdPartyHook)
 
 local before = #calls
