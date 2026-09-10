@@ -18,12 +18,13 @@ assert(ClearNames.UIFonts.Resolve("font_default_text", "readable") == "font_clea
 assert(ClearNames.UIFonts.Resolve("font_heading_unitframe_large_name", "large") == "font_clear_large_bold")
 assert(ClearNames.UIFonts.Resolve("third_party_custom_font", "readable") == "third_party_custom_font")
 
-assert(ClearNames.UIFonts.InstallHook() == true)
+assert(ClearNames.UIFonts.SetMode("readable") == true)
 local wrapper = LabelSetFont
 assert(wrapper == ClearNames.UIFonts.WrappedLabelSetFont)
 assert(ClearNames.UIFonts.InstallHook() == true)
 assert(LabelSetFont == wrapper)
 
+ClearNames.UIFonts.mappedCalls = 0
 LabelSetFont("DynamicLabel", "font_default_text", 4)
 assert(calls[#calls].font == "font_clear_medium_bold")
 assert(calls[#calls].spacing == 4)
