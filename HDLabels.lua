@@ -15,9 +15,16 @@ local trackedUnits = {
 
 local function targetInfoCall(methodName, unitId)
     if type(TargetInfo) ~= "table" then return nil end
-    local fn = TargetInfo[methodName]
-    if type(fn) ~= "function" then return nil end
-    local ok, value = pcall(fn, TargetInfo, unitId)
+    local ok, value = pcall(function()
+        if methodName == "UnitEntityId" and type(TargetInfo.UnitEntityId) == "function" then
+            return TargetInfo:UnitEntityId(unitId)
+        elseif methodName == "UnitName" and type(TargetInfo.UnitName) == "function" then
+            return TargetInfo:UnitName(unitId)
+        elseif methodName == "UnitIsNPC" and type(TargetInfo.UnitIsNPC) == "function" then
+            return TargetInfo:UnitIsNPC(unitId)
+        end
+        return nil
+    end)
     if not ok then return nil end
     return value
 end
