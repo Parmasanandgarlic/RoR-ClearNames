@@ -47,8 +47,8 @@ end
 
 function ClearNames.HDLabels.CancelPendingTargetSync()
     ClearNames.HDLabels.pendingUnits = {}
-    if ClearNames.HDLabels.flushScheduled and type(WindowUnregisterCoreEventHandler) == "function" and ClearNames.WindowName then
-        WindowUnregisterCoreEventHandler(ClearNames.WindowName, "OnUpdate")
+    if ClearNames.HDLabels.flushScheduled and type(WindowUnregisterCoreEventHandler) == "function" then
+        WindowUnregisterCoreEventHandler("Root", "OnUpdate")
     end
     ClearNames.HDLabels.flushScheduled = false
 end
@@ -150,19 +150,19 @@ function ClearNames.HDLabels.QueueTargetSync(unitId)
     ClearNames.HDLabels.pendingUnits[unitId] = true
     if ClearNames.HDLabels.flushScheduled then return true end
 
-    if type(WindowRegisterCoreEventHandler) ~= "function" or not ClearNames.WindowName then
+    if type(WindowRegisterCoreEventHandler) ~= "function" then
         ClearNames.HDLabels.pendingUnits[unitId] = nil
         return ClearNames.HDLabels.SyncUnit(unitId)
     end
 
     ClearNames.HDLabels.flushScheduled = true
-    WindowRegisterCoreEventHandler(ClearNames.WindowName, "OnUpdate", "ClearNames.HDLabels.FlushPendingTargetSync")
+    WindowRegisterCoreEventHandler("Root", "OnUpdate", "ClearNames.HDLabels.FlushPendingTargetSync")
     return true
 end
 
 function ClearNames.HDLabels.FlushPendingTargetSync()
-    if type(WindowUnregisterCoreEventHandler) == "function" and ClearNames.WindowName then
-        WindowUnregisterCoreEventHandler(ClearNames.WindowName, "OnUpdate")
+    if type(WindowUnregisterCoreEventHandler) == "function" then
+        WindowUnregisterCoreEventHandler("Root", "OnUpdate")
     end
     ClearNames.HDLabels.flushScheduled = false
 
