@@ -16,6 +16,7 @@
       <File name="Profiles.lua" />
       <File name="FontLab.lua" />
       <File name="HDLabels.lua" />
+      <File name="UIFonts.lua" />
       <File name="ClearNames.lua" />
       <File name="ClearNames.xml" />
     </Files>
