@@ -42,7 +42,11 @@ local largeMap = {
     font_heading_rank = "font_clear_medium_bold",
 }
 
-local refreshEventKeys = { "LOADING_END" }
+local refreshEventKeys = {
+    "LOADING_END",
+    "GROUP_UPDATED",
+    "GROUP_PLAYER_ADDED",
+}
 
 local safeExactWindows = {
     ClearNamesNameValue = true,
