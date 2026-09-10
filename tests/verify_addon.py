@@ -56,8 +56,67 @@ def test_target_event_bridge_is_registered_on_root():
     assert 'WindowUnregisterEventHandler("Root", SystemData.Events.PLAYER_TARGET_UPDATED)' in source
 
 
-def test_version_is_0_1_1_everywhere():
+def test_ui_fonts_module_is_loaded_before_main():
+    manifest = read("ClearNames.mod")
+    assert '<File name="UIFonts.lua" />' in manifest
+    assert manifest.index('<File name="UIFonts.lua" />') < manifest.index('<File name="ClearNames.lua" />')
+
+
+def test_ui_font_modes_and_mapping_contract_exist():
+    source = read("UIFonts.lua")
+    assert 'off = true' in source
+    assert 'readable = true' in source
+    assert 'large = true' in source
+    assert 'font_heading_unitframe_large_name' in source
+    assert 'font_heading_target_mouseover_name' in source
+    assert 'font_clear_medium_bold' in source
+    assert 'font_clear_large_bold' in source
+
+
+def test_unknown_fonts_pass_through():
+    source = read("UIFonts.lua")
+    assert 'return mapped or fontName' in source
+
+
+def test_hook_is_reversible_idempotent_and_third_party_safe():
+    source = read("UIFonts.lua")
+    assert 'LabelSetFont == ClearNames.UIFonts.WrappedLabelSetFont' in source
+    assert 'LabelSetFont = ClearNames.UIFonts.WrappedLabelSetFont' in source
+    assert 'if LabelSetFont == ClearNames.UIFonts.WrappedLabelSetFont then' in source
+    assert 'LabelSetFont = ClearNames.UIFonts.delegate' in source
+    assert 'ClearNames.UIFonts.delegate = nil' in source
+
+
+def test_static_refresh_is_bounded_to_known_hud_labels():
+    source = read("UIFonts.lua")
+    assert 'PlayerWindowPlayerName' in source
+    assert 'PlayerWindowLevelText' in source
+    assert 'TargetWindowName' in source
+    assert 'FriendlyTargetWindowName' in source
+    assert 'MouseOverTargetUnitWindowName' in source
+    assert 'GroupWindowPlayer' in source
+    assert 'OnUpdate' not in source
+
+
+def test_ui_command_default_and_doctor_are_integrated():
+    source = read("ClearNames.lua")
+    assert 'uiFontMode = "readable"' in source
+    assert 'cmd == "ui"' in source
+    assert 'ClearNames.UIFonts.SetMode' in source
+    assert 'UIFonts=' in source
+    assert 'mapped=' in source
+
+
+def test_ui_font_lifecycle_is_wired_without_polling():
+    source = read("ClearNames.lua")
+    assert 'ClearNames.UIFonts.SetMode(ClearNames.Settings.uiFontMode)' in source
+    assert 'ClearNames.UIFonts.RemoveHook()' in source
+    manifest = read("ClearNames.mod")
+    assert '<OnUpdate>' not in manifest
+
+
+def test_version_is_0_2_0_everywhere():
     source = read("ClearNames.lua")
     manifest = read("ClearNames.mod")
-    assert 'ClearNames.VERSION = "0.1.1"' in source
-    assert '<UiMod name="ClearNames" version="0.1.1"' in manifest
+    assert 'ClearNames.VERSION = "0.2.0"' in source
+    assert '<UiMod name="ClearNames" version="0.2.0"' in manifest
