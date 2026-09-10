@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Interface xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Windows>
+    <Window name="ClearNamesHDLabelTemplate" virtual="true">
+      <Size><AbsPoint x="360" y="34" /></Size>
+      <Windows>
+        <Label name="$parentText" font="font_clear_large_bold" textalign="center" layer="overlay">
+          <Anchors><Anchor point="topleft" relativePoint="topleft" /><Anchor point="bottomright" relativePoint="bottomright" /></Anchors>
+          <Color r="255" g="255" b="255" a="255" />
+        </Label>
+      </Windows>
+    </Window>
+
+    <Window name="ClearNamesWindow" movable="true" layer="dialog">
+      <Size><AbsPoint x="620" y="460" /></Size>
+      <Anchors><Anchor point="center" relativePoint="center" relativeTo="Root" /></Anchors>
+      <Windows>
+        <Window name="$parentBackground" inherits="EA_Window_DefaultBackgroundFrame" />
+        <Window name="$parentTitleBar" inherits="EA_TitleBar_Default" />
+        <Button name="$parentClose" inherits="EA_Button_DefaultWindowClose"><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnClose" /></EventHandlers></Button>
+
+        <Label name="$parentHeading" font="font_default_war_heading" text="ClearNames — Font Lab" textalign="center"><Size><AbsPoint x="560" y="28" /></Size><Anchors><Anchor point="top" relativePoint="top" relativeTo="$parent" y="18" /></Anchors></Label>
+        <Label name="$parentNameLabel" font="font_clear_medium_bold" text="Name font"><Size><AbsPoint x="120" y="26" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="35" y="80" /></Anchors></Label>
+        <Label name="ClearNamesNameValue" font="font_clear_medium" textalign="center"><Size><AbsPoint x="310" y="26" /></Size><Anchors><Anchor point="top" relativePoint="top" relativeTo="$parent" y="80" /></Anchors></Label>
+        <Button name="ClearNamesNamePrev" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="60" y="28" /></Size><Anchors><Anchor point="left" relativePoint="left" relativeTo="$parent" x="30" y="-100" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnNamePrev" /></EventHandlers></Button>
+        <Button name="ClearNamesNameNext" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="60" y="28" /></Size><Anchors><Anchor point="right" relativePoint="right" relativeTo="$parent" x="-30" y="-100" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnNameNext" /></EventHandlers></Button>
+
+        <Label name="$parentTitleLabel" font="font_clear_medium_bold" text="Title font"><Size><AbsPoint x="120" y="26" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="35" y="145" /></Anchors></Label>
+        <Label name="ClearNamesTitleValue" font="font_clear_medium" textalign="center"><Size><AbsPoint x="310" y="26" /></Size><Anchors><Anchor point="top" relativePoint="top" relativeTo="$parent" y="145" /></Anchors></Label>
+        <Button name="ClearNamesTitlePrev" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="60" y="28" /></Size><Anchors><Anchor point="left" relativePoint="left" relativeTo="$parent" x="30" y="-35" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnTitlePrev" /></EventHandlers></Button>
+        <Button name="ClearNamesTitleNext" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="60" y="28" /></Size><Anchors><Anchor point="right" relativePoint="right" relativeTo="$parent" x="-30" y="-35" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnTitleNext" /></EventHandlers></Button>
+
+        <Label name="$parentRatings" font="font_clear_medium_bold" text="Rate the current NAME font (click cycles 1–5 stars)"><Size><AbsPoint x="500" y="26" /></Size><Anchors><Anchor point="top" relativePoint="top" relativeTo="$parent" y="215" /></Anchors></Label>
+        <Button name="ClearNamesRateNear" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="125" y="30" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="35" y="255" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnRateNear" /></EventHandlers></Button>
+        <Button name="ClearNamesRateMid" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="125" y="30" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="175" y="255" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnRateMid" /></EventHandlers></Button>
+        <Button name="ClearNamesRateFar" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="125" y="30" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="315" y="255" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnRateFar" /></EventHandlers></Button>
+        <Button name="ClearNamesRateExtreme" inherits="EA_Button_DefaultResizeable"><Size><AbsPoint x="125" y="30" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="455" y="255" /></Anchors><EventHandlers><EventHandler event="OnLButtonUp" function="ClearNames.OnRateExtreme" /></EventHandlers></Button>
+
+        <Label name="$parentProfileLabel" font="font_clear_medium_bold" text="Profile:"><Size><AbsPoint x="100" y="26" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="35" y="320" /></Anchors></Label>
+        <Label name="ClearNamesProfileValue" font="font_clear_medium" textalign="left"><Size><AbsPoint x="260" y="26" /></Size><Anchors><Anchor point="topleft" relativePoint="topleft" relativeTo="$parent" x="135" y="320" /></Anchors></Label>
+        <Label name="ClearNamesRecommendation" font="font_clear_medium_bold" textalign="center"><Size><AbsPoint x="550" y="30" /></Size><Anchors><Anchor point="top" relativePoint="top" relativeTo="$parent" y="365" /></Anchors></Label>
+        <Label name="$parentHint" font="font_clear_small" text="Commands: /clearnames profile Maximum Readability | PvE | RvR | Immersive | Screenshot    /clearnames doctor    /clearnames restore" textalign="center"><Size><AbsPoint x="560" y="44" /></Size><Anchors><Anchor point="bottom" relativePoint="bottom" relativeTo="$parent" y="-22" /></Anchors></Label>
+      </Windows>
+    </Window>
+  </Windows>
+</Interface>
