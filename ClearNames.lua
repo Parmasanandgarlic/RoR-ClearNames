@@ -111,7 +111,7 @@ function ClearNames.OnInitialize()
     ClearNames.ApplyCurrentFonts()
     ClearNames.Profiles.Apply(ClearNames.Settings.profile)
     if type(WindowRegisterEventHandler) == "function" and SystemData and SystemData.Events and SystemData.Events.PLAYER_TARGET_UPDATED then
-        WindowRegisterEventHandler(ClearNames.WindowName, SystemData.Events.PLAYER_TARGET_UPDATED, "ClearNames.HDLabels.OnTargetUpdated")
+        WindowRegisterEventHandler("Root", SystemData.Events.PLAYER_TARGET_UPDATED, "ClearNames.HDLabels.OnTargetUpdated")
     end
     ClearNames.HDLabels.SetEnabled(ClearNames.Settings.hdEnabled == true)
     if LibSlash and type(LibSlash.RegisterSlashCmd) == "function" then
@@ -124,7 +124,7 @@ end
 
 function ClearNames.OnShutdown()
     if type(WindowUnregisterEventHandler) == "function" and SystemData and SystemData.Events and SystemData.Events.PLAYER_TARGET_UPDATED then
-        WindowUnregisterEventHandler(ClearNames.WindowName, SystemData.Events.PLAYER_TARGET_UPDATED)
+        WindowUnregisterEventHandler("Root", SystemData.Events.PLAYER_TARGET_UPDATED)
     end
     ClearNames.HDLabels.CancelPendingTargetSync()
     ClearNames.HDLabels.unitObjects = {}
