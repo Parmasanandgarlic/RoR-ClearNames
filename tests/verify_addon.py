@@ -30,12 +30,12 @@ def test_hd_labels_use_published_target_state_only():
     assert "GetUpdatedTargets" not in source
 
 
-def test_hd_labels_defer_target_sync_one_frame():
+def test_hd_labels_defer_target_sync_one_frame_on_root():
     source = read("HDLabels.lua")
     assert "ClearNames.HDLabels.OnTargetUpdated" in source
     assert "ClearNames.HDLabels.FlushPendingTargetSync" in source
-    assert 'WindowRegisterCoreEventHandler(ClearNames.WindowName, "OnUpdate", "ClearNames.HDLabels.FlushPendingTargetSync")' in source
-    assert 'WindowUnregisterCoreEventHandler(ClearNames.WindowName, "OnUpdate")' in source
+    assert 'WindowRegisterCoreEventHandler("Root", "OnUpdate", "ClearNames.HDLabels.FlushPendingTargetSync")' in source
+    assert 'WindowUnregisterCoreEventHandler("Root", "OnUpdate")' in source
 
 
 def test_hd_labels_keep_constant_screen_scale():
@@ -44,10 +44,11 @@ def test_hd_labels_keep_constant_screen_scale():
     assert "MoveWindowToWorldObject" not in source
 
 
-def test_target_event_bridge_is_registered():
+def test_target_event_bridge_is_registered_on_root():
     source = read("ClearNames.lua")
     assert "SystemData.Events.PLAYER_TARGET_UPDATED" in source
-    assert '"ClearNames.HDLabels.OnTargetUpdated"' in source
+    assert 'WindowRegisterEventHandler("Root", SystemData.Events.PLAYER_TARGET_UPDATED, "ClearNames.HDLabels.OnTargetUpdated")' in source
+    assert 'WindowUnregisterEventHandler("Root", SystemData.Events.PLAYER_TARGET_UPDATED)' in source
 
 
 def test_version_is_0_1_1_everywhere():
