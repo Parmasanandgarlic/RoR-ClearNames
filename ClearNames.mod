@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ModuleFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <UiMod name="ClearNames" version="0.1.0" date="09/09/2026">
+  <UiMod name="ClearNames" version="0.1.1" date="09/09/2026">
     <Author name="ClearNames contributors" />
     <Description text="Readability-first overhead-name optimizer and calibration lab for Return of Reckoning." />
     <VersionSettings gameVersion="1.4.8" windowsVersion="1.0" savedVariablesVersion="1.0" />
     <Dependencies>
       <Dependency name="EASystem_Utils" />
+      <Dependency name="EASystem_TargetInfo" />
       <Dependency name="EATemplate_DefaultWindowSkin" />
       <Dependency name="LibSlash" optional="true" />
     </Dependencies>
     <Files>
-      <File name="Core/Fonts.lua" />
-      <File name="Core/NativeRenderer.lua" />
-      <File name="Core/Profiles.lua" />
-      <File name="Lab/FontLab.lua" />
-      <File name="Experimental/HDLabels.lua" />
+      <File name="Fonts.lua" />
+      <File name="NativeRenderer.lua" />
+      <File name="Profiles.lua" />
+      <File name="FontLab.lua" />
+      <File name="HDLabels.lua" />
       <File name="ClearNames.lua" />
       <File name="ClearNames.xml" />
     </Files>
