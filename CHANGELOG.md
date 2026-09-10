@@ -1,12 +1,22 @@
 # Changelog
 
+## 0.2.1 — 2026-09-09
+
+- Fixed the 0.2.0 UI-font mapper so it no longer remaps any window merely because that window uses a known stock font resource.
+- Added explicit safe-window scoping: chat UI plus known target/mouseover name labels remain eligible for readability remapping; unknown/custom HUD windows pass through unchanged.
+- Removed stock `PlayerWindow` and group-member labels from the bounded static refresh path to avoid destabilizing fixed-size HP/player/group HUD layouts.
+- Preserved the existing reversible/idempotent `LabelSetFont()` hook and later-third-party-hook safety behavior.
+- Added regression coverage proving custom HP displays, stock player HUD labels, and group labels are not remapped, while chat and target-name surfaces still are.
+- Expanded `/clearnames doctor` to report `HDLabels=ON|OFF` and clarify that the fixed-scale path covers target/mouseover NPCs only.
+- Clarified that native ambient nameplate blur/distance scaling is engine/ReShade controlled and requires a shader-side nametag/UI exclusion for universal protection.
+
 ## 0.2.0 — 2026-09-09
 
 - Added a dedicated `UIFonts.lua` subsystem for ordinary 2D Return of Reckoning UI text.
 - Added persistent `/clearnames ui off|readable|large` modes, with `readable` as the default ReShade-friendly profile.
 - Added conservative allowlist remapping from thin/small stock fonts to built-in MyriadPro bold/outlined clear-font resources; unknown and third-party custom fonts pass through unchanged.
 - Added a reversible, idempotent `LabelSetFont()` wrapper that preserves the pre-existing setter and will not overwrite a later third-party hook during teardown.
-- `/clearnames ui off` now restores the bounded stock HUD labels and fully removes ClearNames' wrapper when ClearNames still owns the global function.
+- `/clearnames ui off` restores the bounded stock HUD labels and removes ClearNames' wrapper when ClearNames still owns the global function.
 - Added bounded static refresh coverage for player name/level, hostile/friendly target names, mouseover name, and the five default group-member names.
 - Added sparse `LOADING_END`, `GROUP_UPDATED`, and `GROUP_PLAYER_ADDED` refresh events so UI frames created after initialization are covered without polling.
 - Expanded `/clearnames doctor` with UI-font mode, hook state, and mapped-call diagnostics.
