@@ -1,5 +1,5 @@
 ClearNames = ClearNames or {}
-ClearNames.VERSION = "0.1.1"
+ClearNames.VERSION = "0.2.0"
 ClearNames.Settings = ClearNames.Settings or {}
 ClearNames.FontScores = ClearNames.FontScores or {}
 ClearNames.WindowName = "ClearNamesWindow"
