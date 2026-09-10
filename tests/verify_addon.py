@@ -102,9 +102,10 @@ def test_ui_refresh_is_sparse_event_driven_and_reversible():
     source = read("UIFonts.lua")
     assert 'ClearNames.UIFonts.RegisterRefreshEvents' in source
     assert 'ClearNames.UIFonts.UnregisterRefreshEvents' in source
-    assert 'SystemData.Events.LOADING_END' in source
-    assert 'SystemData.Events.GROUP_UPDATED' in source
-    assert 'SystemData.Events.GROUP_PLAYER_ADDED' in source
+    assert '"LOADING_END"' in source
+    assert '"GROUP_UPDATED"' in source
+    assert '"GROUP_PLAYER_ADDED"' in source
+    assert 'SystemData.Events[key]' in source
     assert 'RegisterEventHandler' in source
     assert 'UnregisterEventHandler' in source
     assert 'ClearNames.UIFonts.OnUiRefreshEvent' in source
