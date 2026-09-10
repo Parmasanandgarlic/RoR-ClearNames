@@ -87,14 +87,22 @@ def test_hook_is_reversible_idempotent_and_third_party_safe():
     assert 'ClearNames.UIFonts.delegate = nil' in source
 
 
-def test_static_refresh_is_bounded_to_known_hud_labels():
+def test_ui_font_remap_is_scoped_away_from_player_and_group_hud():
     source = read("UIFonts.lua")
-    assert 'PlayerWindowPlayerName' in source
-    assert 'PlayerWindowLevelText' in source
+    assert 'ClearNames.UIFonts.ShouldRemapWindow' in source
+    assert 'string.match(windowName, "^ChatWindow")' in source
+    assert 'string.match(windowName, "^EA_Chat")' in source
+    assert 'TargetWindowName = true' in source
+    assert '{ name = "PlayerWindowPlayerName"' not in source
+    assert '{ name = "PlayerWindowLevelText"' not in source
+    assert '"GroupWindowPlayer" .. i .. "Name"' not in source
+
+
+def test_static_refresh_is_bounded_to_safe_target_labels():
+    source = read("UIFonts.lua")
     assert 'TargetWindowName' in source
     assert 'FriendlyTargetWindowName' in source
     assert 'MouseOverTargetUnitWindowName' in source
-    assert 'GroupWindowPlayer' in source
     assert 'OnUpdate' not in source
 
 
@@ -121,6 +129,12 @@ def test_ui_command_default_and_doctor_are_integrated():
     assert 'mapped=' in source
 
 
+def test_doctor_reports_hd_label_state():
+    source = read("ClearNames.lua")
+    assert 'HDLabels=' in source
+    assert 'hdEnabled' in source
+
+
 def test_ui_font_lifecycle_is_wired_without_polling():
     source = read("ClearNames.lua")
     assert 'ClearNames.UIFonts.SetMode(ClearNames.Settings.uiFontMode)' in source
@@ -129,8 +143,8 @@ def test_ui_font_lifecycle_is_wired_without_polling():
     assert '<OnUpdate>' not in manifest
 
 
-def test_version_is_0_2_0_everywhere():
+def test_version_is_0_2_1_everywhere():
     source = read("ClearNames.lua")
     manifest = read("ClearNames.mod")
-    assert 'ClearNames.VERSION = "0.2.0"' in source
-    assert '<UiMod name="ClearNames" version="0.2.0"' in manifest
+    assert 'ClearNames.VERSION = "0.2.1"' in source
+    assert '<UiMod name="ClearNames" version="0.2.1"' in manifest
