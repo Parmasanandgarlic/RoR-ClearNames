@@ -136,7 +136,7 @@ end
 
 local function refreshLabel(windowName, originalFont)
     if type(LabelSetFont) ~= "function" then return false end
-    if type(DoesWindowExist) == "function" and not DoesWindowExist(windowName) then return false end
+    if type(DoesWindowExist) ~= "function" or not DoesWindowExist(windowName) then return false end
 
     local spacing = defaultLineSpacing()
     if LabelSetFont == ClearNames.UIFonts.WrappedLabelSetFont then
@@ -175,10 +175,13 @@ function ClearNames.UIFonts.SetMode(mode)
     ClearNames.Settings.uiFontMode = selected
     ClearNames.UIFonts.active = selected ~= "off"
 
-    if ClearNames.UIFonts.active then
-        ClearNames.UIFonts.InstallHook()
+    if selected == "off" then
+        ClearNames.UIFonts.RefreshKnown()
+        ClearNames.UIFonts.RemoveHook()
+        return true
     end
 
+    ClearNames.UIFonts.InstallHook()
     ClearNames.UIFonts.RefreshKnown()
     return true
 end
