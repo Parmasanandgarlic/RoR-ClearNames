@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 — 2026-09-09
+
+- Added a dedicated `UIFonts.lua` subsystem for ordinary 2D Return of Reckoning UI text.
+- Added persistent `/clearnames ui off|readable|large` modes, with `readable` as the default ReShade-friendly profile.
+- Added conservative allowlist remapping from thin/small stock fonts to built-in MyriadPro bold/outlined clear-font resources; unknown and third-party custom fonts pass through unchanged.
+- Added a reversible, idempotent `LabelSetFont()` wrapper that preserves the pre-existing setter and will not overwrite a later third-party hook during teardown.
+- `/clearnames ui off` now restores the bounded stock HUD labels and fully removes ClearNames' wrapper when ClearNames still owns the global function.
+- Added bounded static refresh coverage for player name/level, hostile/friendly target names, mouseover name, and the five default group-member names.
+- Added sparse `LOADING_END`, `GROUP_UPDATED`, and `GROUP_PLAYER_ADDED` refresh events so UI frames created after initialization are covered without polling.
+- Expanded `/clearnames doctor` with UI-font mode, hook state, and mapped-call diagnostics.
+- Added executable `texlua` regression coverage for mode mapping, unknown-font pass-through, hook idempotence, teardown, late third-party wrapping, static refresh, and sparse event registration.
+- Preserved all 0.1.1 native overhead-name and fixed-scale target/mouseover NPC-label behavior.
+
 ## 0.1.1 — 2026-09-09
 
 - Fixed the addon manifest so every declared Lua/XML file resolves to the files actually shipped in the repository.
