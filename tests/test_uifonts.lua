@@ -9,7 +9,9 @@ end
 
 LabelSetFont = originalLabelSetFont
 DoesWindowExist = function(windowName)
-    return windowName == "TargetWindowName" or windowName == "GroupWindowPlayer1Name"
+    return windowName == "TargetWindowName"
+        or windowName == "GroupWindowPlayer1Name"
+        or windowName == "PlayerWindowPlayerName"
 end
 WindowUtils = { FONT_DEFAULT_TEXT_LINESPACING = 7 }
 SystemData = {
@@ -33,6 +35,15 @@ assert(ClearNames.UIFonts.Resolve("font_default_text", "readable") == "font_clea
 assert(ClearNames.UIFonts.Resolve("font_heading_unitframe_large_name", "large") == "font_clear_large_bold")
 assert(ClearNames.UIFonts.Resolve("third_party_custom_font", "readable") == "third_party_custom_font")
 
+-- 0.2.1 safety boundary: remapping is opt-in by proven-safe window identity,
+-- never merely because a fixed-size HUD happens to use a stock font resource.
+assert(ClearNames.UIFonts.ShouldRemapWindow("CustomHPDisplayValue") == false)
+assert(ClearNames.UIFonts.ShouldRemapWindow("PlayerWindowPlayerName") == false)
+assert(ClearNames.UIFonts.ShouldRemapWindow("GroupWindowPlayer1Name") == false)
+assert(ClearNames.UIFonts.ShouldRemapWindow("ChatWindowContextFontMenuItem1Label") == true)
+assert(ClearNames.UIFonts.ShouldRemapWindow("EA_ChatDockingWindowLabel") == true)
+assert(ClearNames.UIFonts.ShouldRemapWindow("TargetWindowName") == true)
+
 assert(ClearNames.UIFonts.SetMode("readable") == true)
 assert(#registered == 3)
 local wrapper = LabelSetFont
@@ -42,23 +53,34 @@ assert(LabelSetFont == wrapper)
 assert(ClearNames.UIFonts.RegisterRefreshEvents() == true)
 assert(#registered == 3)
 
--- Regression: a known stock font on an unknown/custom HUD window must NOT be remapped.
--- The previous global-by-font behavior could resize fixed HP readouts and make them clip/disappear.
 ClearNames.UIFonts.mappedCalls = 0
+
 LabelSetFont("CustomHPDisplayValue", "font_default_text", 4)
 assert(calls[#calls].font == "font_default_text")
 assert(calls[#calls].spacing == 4)
+
+LabelSetFont("PlayerWindowPlayerName", "font_heading_unitframe_large_name", 4)
+assert(calls[#calls].font == "font_heading_unitframe_large_name")
+
+LabelSetFont("GroupWindowPlayer1Name", "font_heading_unitframe_large_name", 4)
+assert(calls[#calls].font == "font_heading_unitframe_large_name")
 assert(ClearNames.UIFonts.mappedCalls == 0)
 
--- Proven-safe chat labels should still receive the readability mapping.
 LabelSetFont("ChatWindowContextFontMenuItem1Label", "font_default_text", 4)
 assert(calls[#calls].font == "font_clear_medium_bold")
 assert(ClearNames.UIFonts.mappedCalls == 1)
 
--- Known stock HUD name labels remain eligible.
 LabelSetFont("TargetWindowName", "font_heading_unitframe_large_name", 4)
 assert(calls[#calls].font == "font_clear_medium_bold")
 assert(ClearNames.UIFonts.mappedCalls == 2)
+
+local beforeRefresh = #calls
+ClearNames.UIFonts.RefreshKnown()
+assert(#calls > beforeRefresh)
+for i = beforeRefresh + 1, #calls do
+    assert(calls[i].window ~= "PlayerWindowPlayerName")
+    assert(calls[i].window ~= "GroupWindowPlayer1Name")
+end
 
 assert(ClearNames.UIFonts.SetMode("off") == true)
 assert(LabelSetFont == originalLabelSetFont)
@@ -68,14 +90,6 @@ assert(calls[#calls].font == "font_default_text")
 
 assert(ClearNames.UIFonts.SetMode("readable") == true)
 assert(#registered == 6)
-local foundTarget = false
-local foundGroup = false
-for _, call in ipairs(calls) do
-    if call.window == "TargetWindowName" and call.font == "font_clear_medium_bold" then foundTarget = true end
-    if call.window == "GroupWindowPlayer1Name" and call.font == "font_clear_medium_bold" then foundGroup = true end
-end
-assert(foundTarget == true)
-assert(foundGroup == true)
 
 local callsBeforeRefreshEvent = #calls
 ClearNames.UIFonts.OnUiRefreshEvent()
