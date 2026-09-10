@@ -150,7 +150,7 @@ function ClearNames.HDLabels.QueueTargetSync(unitId)
     ClearNames.HDLabels.pendingUnits[unitId] = true
     if ClearNames.HDLabels.flushScheduled then return true end
 
-    if type(WindowRegisterCoreEventHandler) ~= "function" then
+    if type(WindowRegisterCoreEventHandler) ~= "function" or type(WindowUnregisterCoreEventHandler) ~= "function" then
         ClearNames.HDLabels.pendingUnits[unitId] = nil
         return ClearNames.HDLabels.SyncUnit(unitId)
     end
