@@ -31,6 +31,7 @@ assert(calls[#calls].spacing == 4)
 assert(ClearNames.UIFonts.mappedCalls == 1)
 
 assert(ClearNames.UIFonts.SetMode("off") == true)
+assert(LabelSetFont == originalLabelSetFont)
 LabelSetFont("PassThrough", "font_default_text", 5)
 assert(calls[#calls].font == "font_default_text")
 
@@ -43,6 +44,13 @@ for _, call in ipairs(calls) do
 end
 assert(foundTarget == true)
 assert(foundGroup == true)
+
+local doesWindowExist = DoesWindowExist
+DoesWindowExist = nil
+local callsBeforeMissingWindowApi = #calls
+assert(ClearNames.UIFonts.RefreshKnown() == 0)
+assert(#calls == callsBeforeMissingWindowApi)
+DoesWindowExist = doesWindowExist
 
 local modeBeforeInvalid = ClearNames.Settings.uiFontMode
 assert(ClearNames.UIFonts.SetMode("banana") == false)
