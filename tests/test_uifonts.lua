@@ -42,11 +42,23 @@ assert(LabelSetFont == wrapper)
 assert(ClearNames.UIFonts.RegisterRefreshEvents() == true)
 assert(#registered == 3)
 
+-- Regression: a known stock font on an unknown/custom HUD window must NOT be remapped.
+-- The previous global-by-font behavior could resize fixed HP readouts and make them clip/disappear.
 ClearNames.UIFonts.mappedCalls = 0
-LabelSetFont("DynamicLabel", "font_default_text", 4)
-assert(calls[#calls].font == "font_clear_medium_bold")
+LabelSetFont("CustomHPDisplayValue", "font_default_text", 4)
+assert(calls[#calls].font == "font_default_text")
 assert(calls[#calls].spacing == 4)
+assert(ClearNames.UIFonts.mappedCalls == 0)
+
+-- Proven-safe chat labels should still receive the readability mapping.
+LabelSetFont("ChatWindowContextFontMenuItem1Label", "font_default_text", 4)
+assert(calls[#calls].font == "font_clear_medium_bold")
 assert(ClearNames.UIFonts.mappedCalls == 1)
+
+-- Known stock HUD name labels remain eligible.
+LabelSetFont("TargetWindowName", "font_heading_unitframe_large_name", 4)
+assert(calls[#calls].font == "font_clear_medium_bold")
+assert(ClearNames.UIFonts.mappedCalls == 2)
 
 assert(ClearNames.UIFonts.SetMode("off") == true)
 assert(LabelSetFont == originalLabelSetFont)
