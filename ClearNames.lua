@@ -1,5 +1,5 @@
 ClearNames = ClearNames or {}
-ClearNames.VERSION = "0.2.0"
+ClearNames.VERSION = "0.2.1"
 ClearNames.Settings = ClearNames.Settings or {}
 ClearNames.FontScores = ClearNames.FontScores or {}
 ClearNames.WindowName = "ClearNamesWindow"
@@ -60,7 +60,9 @@ function ClearNames.Doctor()
     local uiMode = ClearNames.Settings.uiFontMode or "off"
     local uiHook = ClearNames.UIFonts and ClearNames.UIFonts.IsHooked and ClearNames.UIFonts.IsHooked() and "HOOKED" or "PASSIVE"
     local mapped = ClearNames.UIFonts and ClearNames.UIFonts.mappedCalls or 0
+    local hdState = ClearNames.Settings.hdEnabled == true and "ON" or "OFF"
     say("UIFonts=" .. uiHook .. " mode=" .. tostring(uiMode) .. " mapped=" .. tostring(mapped))
+    say("HDLabels=" .. hdState .. " coverage=target/mouseover")
     say("recommendation=" .. tostring(rec) .. " score=" .. tostring(score))
 end
 
