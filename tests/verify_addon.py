@@ -98,6 +98,20 @@ def test_static_refresh_is_bounded_to_known_hud_labels():
     assert 'OnUpdate' not in source
 
 
+def test_ui_refresh_is_sparse_event_driven_and_reversible():
+    source = read("UIFonts.lua")
+    assert 'ClearNames.UIFonts.RegisterRefreshEvents' in source
+    assert 'ClearNames.UIFonts.UnregisterRefreshEvents' in source
+    assert '"LOADING_END"' in source
+    assert '"GROUP_UPDATED"' in source
+    assert '"GROUP_PLAYER_ADDED"' in source
+    assert 'SystemData.Events[key]' in source
+    assert 'RegisterEventHandler' in source
+    assert 'UnregisterEventHandler' in source
+    assert 'ClearNames.UIFonts.OnUiRefreshEvent' in source
+    assert 'OnUpdate' not in source
+
+
 def test_ui_command_default_and_doctor_are_integrated():
     source = read("ClearNames.lua")
     assert 'uiFontMode = "readable"' in source

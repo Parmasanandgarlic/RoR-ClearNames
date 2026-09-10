@@ -1,5 +1,5 @@
 ClearNames = ClearNames or {}
-ClearNames.VERSION = "0.1.1"
+ClearNames.VERSION = "0.2.0"
 ClearNames.Settings = ClearNames.Settings or {}
 ClearNames.FontScores = ClearNames.FontScores or {}
 ClearNames.WindowName = "ClearNamesWindow"
@@ -13,6 +13,7 @@ local function defaults()
     if not ClearNames.Settings.nameFont then ClearNames.Settings.nameFont = "font_clear_large_bold" end
     if not ClearNames.Settings.titleFont then ClearNames.Settings.titleFont = "font_clear_medium_bold" end
     if ClearNames.Settings.hdEnabled == nil then ClearNames.Settings.hdEnabled = false end
+    if not ClearNames.Settings.uiFontMode then ClearNames.Settings.uiFontMode = "readable" end
     if not ClearNames.Settings.profile then ClearNames.Settings.profile = "Maximum Readability" end
 end
 
@@ -56,6 +57,10 @@ function ClearNames.Doctor()
     local rec, score = ClearNames.FontLab.Recommend()
     say("v" .. ClearNames.VERSION .. " | SetNamesAndTitlesFont=" .. setfont .. " | AttachWindowToWorldObject=" .. attach .. " | CreateWindowFromTemplate=" .. create)
     say("name=" .. ClearNames.Settings.nameFont .. " | title=" .. ClearNames.Settings.titleFont .. " | profile=" .. ClearNames.Settings.profile)
+    local uiMode = ClearNames.Settings.uiFontMode or "off"
+    local uiHook = ClearNames.UIFonts and ClearNames.UIFonts.IsHooked and ClearNames.UIFonts.IsHooked() and "HOOKED" or "PASSIVE"
+    local mapped = ClearNames.UIFonts and ClearNames.UIFonts.mappedCalls or 0
+    say("UIFonts=" .. uiHook .. " mode=" .. tostring(uiMode) .. " mapped=" .. tostring(mapped))
     say("recommendation=" .. tostring(rec) .. " score=" .. tostring(score))
 end
 
@@ -101,7 +106,10 @@ function ClearNames.Command(args)
     elseif cmd == "profile" then ClearNames.ApplyProfile(rest)
     elseif cmd == "font" then if ClearNames.Fonts.Get(rest) then ClearNames.Settings.nameFont=rest; ClearNames.ApplyCurrentFonts(); ClearNames.UpdateWindow() else say("unknown font") end
     elseif cmd == "hd" then ClearNames.HDLabels.SetEnabled(string.lower(rest)=="on"); say("experimental HD labels " .. (ClearNames.HDLabels.enabled and "ON" or "OFF"))
-    elseif cmd == "help" then say("/clearnames lab | doctor | restore | profile <name> | font <resource> | hd on|off")
+    elseif cmd == "ui" then
+        local mode = string.lower(rest or "")
+        if ClearNames.UIFonts.SetMode(mode) then say("UI font mode " .. mode) else say("ui mode must be off, readable, or large") end
+    elseif cmd == "help" then say("/clearnames lab | doctor | restore | profile <name> | font <resource> | hd on|off | ui off|readable|large")
     else say("unknown command; use /clearnames help") end
 end
 
@@ -110,6 +118,7 @@ function ClearNames.OnInitialize()
     ClearNames.NativeRenderer.CaptureOriginal()
     ClearNames.ApplyCurrentFonts()
     ClearNames.Profiles.Apply(ClearNames.Settings.profile)
+    ClearNames.UIFonts.SetMode(ClearNames.Settings.uiFontMode)
     if type(WindowRegisterEventHandler) == "function" and SystemData and SystemData.Events and SystemData.Events.PLAYER_TARGET_UPDATED then
         WindowRegisterEventHandler("Root", SystemData.Events.PLAYER_TARGET_UPDATED, "ClearNames.HDLabels.OnTargetUpdated")
     end
@@ -129,4 +138,5 @@ function ClearNames.OnShutdown()
     ClearNames.HDLabels.CancelPendingTargetSync()
     ClearNames.HDLabels.unitObjects = {}
     ClearNames.HDLabels.DetachAll()
+    ClearNames.UIFonts.RemoveHook()
 end
